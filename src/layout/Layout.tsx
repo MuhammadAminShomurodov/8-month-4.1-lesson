@@ -1,6 +1,6 @@
 const Layout = () => {
   return (
-    <div></div>
+    <div>Layout</div>
   )
 }
 export default Layout

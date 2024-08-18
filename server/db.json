@@ -1,18 +1,13 @@
 {
   "products": [
     {
-      "id": "1234567",
       "title": "Apple iPhone 14 Pro",
       "description": "The latest iPhone with A16 Bionic chip and ProMotion technology.",
-      "brand": "Apple",
-      "category": "Smartphones",
       "price": 999.99,
-      "discountPercentage": 10,
-      "rating": 4.8,
-      "comments": "Amazing camera quality and performance.",
       "images": [
         "https://cdn.mos.cms.futurecdn.net/hUQHCvvKAHtNGxtLiB8rjP-320-80.gif"
-      ]
+      ],
+      "id": "1234567"
     },
     {
       "id": "2345678",
@@ -230,22 +225,6 @@
       "username": "hankanderson",
       "password": "hank1234",
       "phone": "+998901234576"
-    },
-    {
-      "id": "9d49",
-      "firstName": "muhammadamin",
-      "lastName": "shomurodov",
-      "email": "example@gmail.com",
-      "username": "admin",
-      "phone": "12343556789"
-    },
-    {
-      "id": "d1a0",
-      "firstName": "muhammadamin",
-      "lastName": "shomurodov",
-      "email": "example@gmail.com",
-      "username": "admin",
-      "phone": "12343556789"
     }
   ]
 }
