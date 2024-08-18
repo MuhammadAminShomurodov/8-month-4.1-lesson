@@ -1,61 +1,64 @@
+// pages/login/Login.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Form } from 'antd';
 
 const Login: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (values: { username: string; password: string }) => {
-    setLoading(true);
-    try {
-      if (values.username === 'admin' && values.password === 'password') {
-        localStorage.setItem('auth', 'true'); 
-        navigate('/'); 
-      } else {
-        alert('Invalid credentials');
-      }
-    } finally {
-      setLoading(false);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Simulate login logic
+    if (username === 'johndoe' && password === 'password') {
+      // Set authentication token in local storage
+      localStorage.setItem('authToken', 'dummy-token');
+      // Redirect to the dashboard
+      navigate('/');
+    } else {
+      setError('Invalid username or password');
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full animate-fadeIn">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Login
-        </h2>
-        <Form onFinish={handleLogin}>
-          <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
-          >
-            <Input
-              placeholder="Username"
-              className="border border-gray-300 rounded-md py-2 px-4 mb-4 transition duration-300 ease-in-out focus:border-blue-500 focus:ring focus:ring-blue-200"
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <h1 className="text-2xl font-semibold text-gray-800 mb-4">Login</h1>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-gray-700 mb-1">Username</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your username"
             />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
-            <Input.Password
-              placeholder="Password"
-              className="border border-gray-300 rounded-md py-2 px-4 mb-4 transition duration-300 ease-in-out focus:border-blue-500 focus:ring focus:ring-blue-200"
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-gray-700 mb-1">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your password"
             />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              className="w-full bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Login
-            </Button>
-          </Form.Item>
-        </Form>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

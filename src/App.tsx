@@ -4,19 +4,22 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Login from "./pages/login/Login";
 import Users from "./pages/users/Users";
 import Products from "./pages/products/Products";
-import Profile from "./pages/profile/Profile"; // Import the Profile component
+import Profile from "./pages/profile/Profile";
 import Hello from "./components/Hello";
+import PrivateRoute from "./components/PrivateRoute"; // Import the PrivateRoute component
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Dashboard />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="users" element={<Users />} />
-          <Route path="products" element={<Products />} />
-          <Route path="profile" element={<Profile />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/" element={<Dashboard />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="users" element={<Users />} />
+            <Route path="products" element={<Products />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
