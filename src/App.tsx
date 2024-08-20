@@ -6,13 +6,14 @@ import Users from "./pages/users/Users";
 import Products from "./pages/products/Products";
 import Profile from "./pages/profile/Profile";
 import Hello from "./components/Hello";
-import PrivateRoute from "./components/PrivateRoute"; // Import the PrivateRoute component
+import PrivateRoute from "./components/PrivateRoute"; 
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Dashboard />}>
             <Route index element={<DashboardHome />} />
@@ -26,7 +27,8 @@ const App: React.FC = () => {
   );
 };
 
-const DashboardHome = () => (
+// DashboardHome Component
+const DashboardHome: React.FC = () => (
   <div>
     <Hello />
   </div>

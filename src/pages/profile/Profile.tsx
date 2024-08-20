@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Profile: React.FC = () => {
+  const langData = useTranslation();
+
   // State for form values
   const [formData, setFormData] = useState({
     username: "",
@@ -124,26 +127,30 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Profile Information */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            Profile Information
+            {langData.t("profile.profileInfo")}
           </h2>
-          <p className="text-gray-600 mb-2">Username: {formData.username}</p>
-          <p className="text-gray-600 mb-2">Joined: January 1, 2023</p>
-          <p className="text-gray-600 mb-2">Bio: {formData.bio}</p>
+          <p className="text-gray-600 mb-2">
+            {langData.t("profile.username")}: {formData.username}
+          </p>
+          <p className="text-gray-600 mb-2">
+            {langData.t("profile.joined")}: January 1, 2023
+          </p>
+          <p className="text-gray-600 mb-2">
+            {langData.t("profile.bio")}: {formData.bio}
+          </p>
         </div>
 
-        {/* Update Form */}
         <div>
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            Update Information
+            {langData.t("profile.updateProfile")}
           </h2>
           {error && <p className="text-red-500 mb-4">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-gray-700 mb-1">
-                Username
+                {langData.t("profile.username")}
               </label>
               <input
                 id="username"
@@ -156,7 +163,7 @@ const Profile: React.FC = () => {
             </div>
             <div>
               <label htmlFor="email" className="block text-gray-700 mb-1">
-                Email
+                {langData.t("profile.email")}
               </label>
               <input
                 id="email"
@@ -169,7 +176,7 @@ const Profile: React.FC = () => {
             </div>
             <div>
               <label htmlFor="bio" className="block text-gray-700 mb-1">
-                Bio
+                {langData.t("profile.bio")}
               </label>
               <textarea
                 id="bio"

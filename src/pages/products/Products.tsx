@@ -9,9 +9,18 @@ import {
   Form,
   Input,
   Button,
+  Select,
 } from "antd";
 import axios from "axios";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { useTranslation } from "react-i18next"; // Import useTranslation
+
+const { Option } = Select;
 
 interface Product {
   id: number;
@@ -22,12 +31,17 @@ interface Product {
 }
 
 const Products: React.FC = () => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [form] = Form.useForm();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("ascend");
+  const langData = useTranslation();
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,14 +56,14 @@ const Products: React.FC = () => {
         setProducts(productsWithNumberPrice);
       } catch (error) {
         console.error("Failed to fetch products:", error);
-        message.error("Failed to load products.");
+        message.error(t("failedToLoadProducts"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [t]);
 
   const handleAdd = () => {
     setIsEditing(false);
@@ -67,21 +81,21 @@ const Products: React.FC = () => {
 
   const handleDelete = (id: number) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this product?",
-      content: "Once deleted, the product cannot be recovered.",
-      okText: "Delete",
+      title: t("deleteConfirmTitle"),
+      content: t("deleteConfirmContent"),
+      okText: t("delete"),
       okType: "danger",
-      cancelText: "Cancel",
+      cancelText: t("cancel"),
       onOk: async () => {
         try {
           await axios.delete(`http://localhost:3000/products/${id}`);
           setProducts((prevProducts) =>
             prevProducts.filter((product) => product.id !== id)
           );
-          message.success("Product deleted successfully");
+          message.success(t("productDeleted"));
         } catch (error) {
           console.error("Failed to delete product:", error);
-          message.error("Failed to delete product.");
+          message.error(t("failedToDeleteProduct"));
         }
       },
     });
@@ -101,7 +115,7 @@ const Products: React.FC = () => {
               : product
           )
         );
-        message.success("Product updated successfully");
+        message.success(t("productUpdated"));
       } else {
         const response = await axios.post<Product>(
           "http://localhost:3000/products",
@@ -111,30 +125,54 @@ const Products: React.FC = () => {
           }
         );
         setProducts((prevProducts) => [...prevProducts, response.data]);
-        message.success("Product added successfully");
+        message.success(t("productAdded"));
       }
       form.resetFields();
       setIsModalVisible(false);
     } catch (error) {
       console.error("Failed to save product:", error);
-      message.error("Failed to save product.");
+      message.error(t("failedToSaveProduct"));
     }
   };
+
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortOrder === "ascend") {
+      return a.price - b.price;
+    } else {
+      return b.price - a.price;
+    }
+  });
 
   if (loading) return <Spin size="large" />;
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={handleAdd}
-        style={{ marginBottom: 16 }}
-      >
-        Add New Product
-      </Button>
+      <div className="flex items-center mb-4">
+        <Input
+          placeholder={langData.t("product.searchByTitle")}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          prefix={<SearchOutlined />}
+          style={{ marginRight: 16, width: 300 }}
+        />
+        <Select
+          defaultValue="ascend"
+          style={{ width: 150, marginRight: 16 }}
+          onChange={(value) => setSortOrder(value)}
+        >
+          <Option value="ascend">{langData.t("product.priceAscending")}</Option>
+          <Option value="descend">{langData.t("product.priceDescending")}</Option>
+        </Select>
+        <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+          {langData.t("product.addNewProduct")}
+        </Button>
+      </div>
       <Row gutter={16}>
-        {products.map((product) => (
+        {sortedProducts.map((product) => (
           <Col span={8} key={product.id} className="mb-4">
             <Card
               bordered={false}
@@ -176,7 +214,7 @@ const Products: React.FC = () => {
         ))}
       </Row>
       <Modal
-        title={isEditing ? "Edit Product" : "Add Product"}
+        title={isEditing ? t("editProduct") : t("addProduct")}
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
@@ -189,20 +227,18 @@ const Products: React.FC = () => {
         >
           <Form.Item
             name="title"
-            label="Title"
-            rules={[
-              { required: true, message: "Please input the product title!" },
-            ]}
+            label={t("title")}
+            rules={[{ required: true, message: t("inputTitle") }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="description"
-            label="Description"
+            label={t("description")}
             rules={[
               {
                 required: true,
-                message: "Please input the product description!",
+                message: t("inputDescription"),
               },
             ]}
           >
@@ -210,23 +246,21 @@ const Products: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="price"
-            label="Price"
-            rules={[
-              { required: true, message: "Please input the product price!" },
-            ]}
+            label={t("price")}
+            rules={[{ required: true, message: t("inputPrice") }]}
           >
             <Input type="number" step="0.01" />
           </Form.Item>
           <Form.Item
             name="images"
-            label="Image URL"
-            rules={[{ required: true, message: "Please input the image URL!" }]}
+            label={t("imageURL")}
+            rules={[{ required: true, message: t("inputImageURL") }]}
           >
             <Input />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              {isEditing ? "Update" : "Add"}
+              {isEditing ? t("update") : t("add")}
             </Button>
           </Form.Item>
         </Form>
